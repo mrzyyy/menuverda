@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Menu</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header >
+    <div >
+    <img class="logoo" src="/css/assets/e134935c-47c9-45ab-bde6-f28da957a76c.jpg" alt="img">
+</div>
+ <div>
+
+    <h1 class="header">cafe verda  </h1>
+</div>
+</header>
+<button id="backToTop" class="back-to-top">↑</button>
+
+<div   class="filter-buttons"  >
+    <button  class="hover-btn"  onclick="filterMenu('all')">همه</button>
+    <button  class="hover-btn"  onclick="filterMenu('sandwich')">بار سرد</button>
+    <button  class="hover-btn"  onclick="filterMenu('pizza')">بار گرم</button>
+    <button  class="hover-btn"  onclick="filterMenu('appetizer')">شیک</button>
+    <button  class="hover-btn"  onclick="filterMenu('drink')">بیکری</button>  
+    <button  class="hover-btn"  onclick="filterMenu('hall')">ساندویچ</button>    
+    
+</div>
+<div class="menu-grid" id="menu-container">
+    <!-- کارت‌های غذا اینجا اضافه می‌شوند -->
+</div>
+
+
+<script type="module"  src="/js/script.js">
+
+    // script.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  
+const firebaseConfig = {
+  apiKey: "AIzaSyC6qb8-8H6buRMjt4rlkBZ_HoxAoyuckEY",
+  authDomain: "cafe-verda.firebaseapp.com",
+  projectId: "cafe-verda"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const container = document.getElementById("menu-container");
+let allItems = [];
+
+async function loadMenu() {
+  const snap = await getDocs(collection(db, "menus"));
+  allItems = [];
+  snap.forEach(d => allItems.push(d.data()));
+  renderMenu(allItems);
+}
+
+function renderMenu(items) {
+  container.innerHTML = "";
+  items.forEach(item => {
+    container.innerHTML +=` 
+      <div class="card">
+        <img src="${item.imageUrl}">
+        <h3>${item.title}</h3>
+        <p>${item.desc || ""}</p>
+        <strong>${item.price} تومان</strong>
+      </div>
+    `;
+  });
+}
+
+window.filterMenu = function (cat) {
+  if (cat === "all") renderMenu(allItems);
+  else renderMenu(allItems.filter(i => i.category === cat));
+};
+
+loadMenu();
+
+</script>
+</body> 
+<footer class="site-footer"> <hr>
+     <br>
+    <p>اینستاگرام    : @cafeverda1</p> 
+    <p>ایمیل: @cafe-verda.com</p>
+        
+<p>شماره تماس: 09922376515</p> <br>
+    <p>طراحی و توسعه توسط تیم  آماریتا</p>
+    <p>© 2025 تمامی حقوق محفوظ است</p>
+</footer>
+</html>
